@@ -1,0 +1,104 @@
+# Import Libraries
+
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib as plt
+
+# Load Dataset
+
+train = pd.read_csv('D:\\Kaggle Projects\HousePrice\\train.csv')
+
+# Print Dataset
+
+train
+
+# Print number of rows and columns
+
+train.shape
+
+# Removed all columns that have mostly NULL values
+
+train.drop(['Alley', 'FireplaceQu', 'Fence', 'MiscFeature', 'PoolQC'], axis=1, inplace=True)
+
+# print information of dataset
+
+train.info()
+
+# print the correlation
+
+train.corr()
+
+# remove the column that have correlation negative with SalePrice
+
+train.drop(['YrSold', 'MiscVal', 'EnclosedPorch', 'KitchenAbvGr', 'BsmtHalfBath', 'LowQualFinSF', 'BsmtFinSF2', 'OverallCond', 'MSSubClass', 'Id'], axis=1, inplace=True)
+
+# create the dummy values
+
+dumy_values = pd.get_dummies(train)
+dumy_values
+
+# drop one column out of 2 dummy
+
+dumy_values_remove = pd.get_dummies(train, drop_first=True)
+dumy_values_remove
+
+dumy_values_remove.drop(['MasVnrArea', 'LotFrontage', 'GarageYrBlt'], axis=1, inplace=True)
+
+# calculate the percentage of missing values
+
+column_missing_values = dumy_values_remove.isnull().sum().sort_values(ascending=False)
+total = 1460
+percentage = (train.isnull().sum() * 100)/total
+
+# concatenate the missing values and percentage of missing values and then print them
+
+df = pd.concat([column_missing_values, percentage], axis=1)
+df.head(10)
+
+# Split data 
+
+x = dumy_values_remove.drop(['OverallQual', 'YearBuilt', 'YearRemodAdd', 'TotalBsmtSF', '1stFlrSF', 'GrLivArea', 'FullBath', 'TotRmsAbvGrd', 'GarageArea', 'GarageCars'], axis=1)
+y = dumy_values_remove['SalePrice']
+
+print('Shape of x =', x.shape)
+print('Shape of y =', y.shape)
+
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=51)
+
+print('Shape of x_train = ', x_train.shape)
+print('Shape of y_train = ', y_train.shape)
+print('Shape of x_test = ', x_test.shape)
+print('Shape of y_test = ', y_test.shape)
+
+# Feature Scaling
+
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+sc.fit(x_train)
+x_train = sc.transform(x_train)
+x_test = sc.transform(x_test)
+
+# Linear Regression - ML Model Training
+
+from sklearn.linear_model import LinearRegression
+lr = LinearRegression()
+
+lr.fit(x_train, y_train)
+
+lr.coef_
+
+lr.intercept_
+
+# Predict the value of Home and Test
+
+x_test[0, :]
+
+lr.predict([x_test[0, :]])
+
+lr.predict(x_test)
+
+print(y_test)
+
+lr.score(x_test, y_test)
