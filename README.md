@@ -9,10 +9,4 @@ The Project / Web App is built in Python using the Following Libraries:
 
  * numpy
  * pandas
- * matplotlib
- * seaborn
  * sklearn
- * pickle
- * flask
- * streamlit
- * json
