@@ -10,3 +10,5 @@ The Project / Web App is built in Python using the Following Libraries:
  * numpy
  * pandas
  * sklearn
+ * matplotlib
+ * seaborn
